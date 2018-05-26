@@ -1,0 +1,6 @@
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\bin\Debug\HookHandlerDLL.dll
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\bin\Debug\HookHandlerDLL.pdb
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\obj\Debug\HookDLL.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\obj\Debug\HookHandlerDLL.dll
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\obj\Debug\HookHandlerDLL.pdb
+C:\Users\Admin\source\repos\DoAnMang\HookHandlerDLL\obj\Debug\HookDLL.csprojResolveAssemblyReference.cache
