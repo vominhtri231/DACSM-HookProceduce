@@ -46,14 +46,20 @@ namespace HookHandlerDLL
 
         Socket socket;
         IPEndPoint iPEndPoint;
+        ClientListener listener;
         public Client(string address, int port)
         {
             iPEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(iPEndPoint);
 
-            ClientListener listener=new ClientListener(socket);
+            listener=new ClientListener(socket);
             new Thread(listener.Run).Start();
+        }
+
+        ~Client()
+        {
+            listener.Stop();
         }
 
         public void Send(string message)

